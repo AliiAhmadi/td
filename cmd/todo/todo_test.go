@@ -27,3 +27,25 @@ func TestAdd(t *testing.T) {
 		}
 	}
 }
+
+// TestComplete creates a list and add a task to that
+// after that check for Done in that
+func TestComplete(t *testing.T) {
+	l := todo.List{}
+
+	task := "here is a task for testing"
+	l.Add(task)
+
+	if l[0].Task != task {
+		t.Errorf("TestComplete: expected %s - got %s", task, l[0].Task)
+	}
+
+	if l[0].Done {
+		t.Errorf("TaskComplete: new task should not be completed")
+	}
+
+	l.Complete(1)
+	if !l[0].Done {
+		t.Errorf("TaskComplete: task should be completed")
+	}
+}
