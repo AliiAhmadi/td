@@ -29,11 +29,32 @@ func (l *List) Add(task string) {
 
 // Complete makes a todo complete by change Done from false to true
 func (l *List) Complete(index int) error {
-	if index <= 0 || index > len(*l) {
-		return fmt.Errorf("item %d does not exist", index)
+	err := l.indexCheck(index)
+	if err != nil {
+		return err
 	}
 
 	(*l)[index-1].Done = true
 	(*l)[index-1].CompletedAt = time.Now()
+	return nil
+}
+
+// Delete method deletes a todo from list by its index
+func (l *List) Delete(index int) error {
+	err := l.indexCheck(index)
+	if err != nil {
+		return err
+	}
+
+	*l = append((*l)[:index-1], (*l)[index:]...)
+	return nil
+}
+
+// indexCheck checks index to be in correct context
+func (l *List) indexCheck(index int) error {
+	if index <= 0 || index > len(*l) {
+		return fmt.Errorf("item %d does not exist", index)
+	}
+
 	return nil
 }
