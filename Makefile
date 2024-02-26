@@ -3,4 +3,10 @@
 run:
 	@go run ./cmd/
 
-.PHONY: run
+test: clear_cache
+	@go test ./...
+
+clear_cache:
+	@go clean -cache
+
+.PHONY: run test clear_cache
