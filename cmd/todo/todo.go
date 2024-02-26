@@ -1,7 +1,9 @@
 package todo
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -48,6 +50,17 @@ func (l *List) Delete(index int) error {
 
 	*l = append((*l)[:index-1], (*l)[index:]...)
 	return nil
+}
+
+// Save converts list of items to a json and write them
+// in input file
+func (l *List) Save(file string) error {
+	j, err := json.Marshal(l)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(file, j, 0644)
 }
 
 // indexCheck checks index to be in correct context
