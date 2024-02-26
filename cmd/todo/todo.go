@@ -2,6 +2,7 @@ package todo
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -61,6 +62,26 @@ func (l *List) Save(file string) error {
 	}
 
 	return os.WriteFile(file, j, 0644)
+}
+
+// Get reads specified file and unmarshal its to
+// a list of items
+func (l *List) Get(file string) error {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		switch {
+		case errors.Is(err, os.ErrNotExist):
+			return nil
+		default:
+			return err
+		}
+	}
+
+	if len(data) == 0 {
+		return nil
+	}
+
+	return json.Unmarshal(data, l)
 }
 
 // indexCheck checks index to be in correct context
