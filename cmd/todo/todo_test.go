@@ -1,6 +1,7 @@
 package todo_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/AliiAhmadi/td/cmd/todo"
@@ -75,5 +76,43 @@ func TestDelete(t *testing.T) {
 
 	if l[1].Task != tasks[2] {
 		t.Errorf("TestDelete: expected %s - got %s", tasks[2], l[1].Task)
+	}
+}
+
+// TestSaveGet tests save and get method
+// create a temp file by using os package
+// and save from l1 to temp file and read
+// from file to l2
+func TestSaveGet(t *testing.T) {
+	l1 := todo.List{}
+	l2 := todo.List{}
+
+	newTask := "new task"
+	l1.Add(newTask)
+
+	if l1[0].Task != newTask {
+		t.Errorf("TestSaveGet: expected %s - got %s", newTask, l1[0].Task)
+	}
+
+	temp, err := os.CreateTemp("", "")
+	if err != nil {
+		t.Fatalf("error creating temp file: %s", err.Error())
+	}
+	defer os.Remove(temp.Name())
+
+	if err = l1.Save(temp.Name()); err != nil {
+		t.Fatalf("error saving list in temp file: %s", err.Error())
+	}
+
+	if err = l2.Get(temp.Name()); err != nil {
+		t.Fatalf("error getting list from file: %s", err.Error())
+	}
+
+	if len(l2) != 1 {
+		t.Errorf("TestSaveGet: expected length %d - got %d", 1, len(l2))
+	}
+
+	if l2[0].Task != newTask {
+		t.Errorf("TestSaveGet: expected %s - got %s", newTask, l2[0].Task)
 	}
 }
