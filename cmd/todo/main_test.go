@@ -34,7 +34,7 @@ func TestMain(m *testing.M) {
 	os.Exit(res)
 }
 
-func TestTodoCLI(t *testing.T) {
+func TestListTodosCLI(t *testing.T) {
 	task := "test task (1)"
 
 	dir, err := os.Getwd()
