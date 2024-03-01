@@ -1,7 +1,7 @@
 .DEFAUL_GOAL := run
 
 run:
-	@go run ./cmd/
+	@go run ./cmd/todo
 
 test: clear_cache
 	@go test ./...
@@ -9,4 +9,7 @@ test: clear_cache
 clear_cache:
 	@go clean -cache
 
-.PHONY: run test clear_cache
+compile_check:
+	@go build -o temp ./cmd/todo && rm -rf temp
+
+.PHONY: run test clear_cache compile_check

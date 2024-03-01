@@ -1,16 +1,16 @@
-package todo_test
+package td_test
 
 import (
 	"os"
 	"testing"
 
-	todo "github.com/AliiAhmadi/td"
+	"github.com/AliiAhmadi/td"
 )
 
 // TestAdd tests add method on list by adding
 // some tasks and check them
 func TestAdd(t *testing.T) {
-	l := todo.List{}
+	l := td.List{}
 
 	names := []string{
 		"task 1",
@@ -32,7 +32,7 @@ func TestAdd(t *testing.T) {
 // TestComplete creates a list and add a task to that
 // after that check for Done in that
 func TestComplete(t *testing.T) {
-	l := todo.List{}
+	l := td.List{}
 
 	task := "here is a task for testing"
 	l.Add(task)
@@ -53,7 +53,7 @@ func TestComplete(t *testing.T) {
 
 // TestDelete tests delete method on list
 func TestDelete(t *testing.T) {
-	l := todo.List{}
+	l := td.List{}
 
 	tasks := []string{
 		"first task",
@@ -84,8 +84,8 @@ func TestDelete(t *testing.T) {
 // and save from l1 to temp file and read
 // from file to l2
 func TestSaveGet(t *testing.T) {
-	l1 := todo.List{}
-	l2 := todo.List{}
+	l1 := td.List{}
+	l2 := td.List{}
 
 	newTask := "new task"
 	l1.Add(newTask)
