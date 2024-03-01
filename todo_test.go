@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/AliiAhmadi/td/cmd/todo"
+	todo "github.com/AliiAhmadi/td"
 )
 
 // TestAdd tests add method on list by adding
