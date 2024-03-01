@@ -6,6 +6,9 @@ run:
 test: clear_cache
 	@go test ./...
 
+testv: clear_cache
+	@go test -v ./...
+
 clear_cache:
 	@go clean -cache
 
@@ -16,4 +19,4 @@ compile_check:
 build:
 	@go build -o td ./cmd/todo
 
-.PHONY: run test clear_cache compile_check build
+.PHONY: run test clear_cache compile_check build testv
