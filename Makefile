@@ -11,5 +11,9 @@ clear_cache:
 
 compile_check:
 	@go build -o temp ./cmd/todo && rm -rf temp
+	@echo "compile status: OK"
 
-.PHONY: run test clear_cache compile_check
+build:
+	@go build -o td ./cmd/todo
+
+.PHONY: run test clear_cache compile_check build
