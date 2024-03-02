@@ -72,6 +72,12 @@ func main() {
 			os.Exit(1)
 		}
 
+		// Save the new list
+		if err := l.Save(todoFileName); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
 		// Show updated task
 		fmt.Fprintln(os.Stdout, (*l)[*uncomplete-1].Task)
 
