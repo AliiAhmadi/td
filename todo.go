@@ -13,7 +13,7 @@ type item struct {
 	Task        string    `json:"task"`
 	Done        bool      `json:"done"`
 	CreatedAt   time.Time `json:"created_at"`
-	CompletedAt time.Time `json:"updated_at"`
+	CompletedAt time.Time `json:"completed_at"`
 }
 
 // List represents all todos in application
@@ -39,6 +39,17 @@ func (l *List) Complete(index int) error {
 
 	(*l)[index-1].Done = true
 	(*l)[index-1].CompletedAt = time.Now()
+	return nil
+}
+
+// Uncomplete a completed todo
+func (l *List) Uncomplete(index int) error {
+	if err := l.indexCheck(index); err != nil {
+		return err
+	}
+
+	(*l)[index-1].Done = false
+	(*l)[index-1].CompletedAt = time.Time{}
 	return nil
 }
 

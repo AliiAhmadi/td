@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/AliiAhmadi/td"
 )
@@ -12,6 +12,15 @@ import (
 const todoFileName = ".todo.json"
 
 func main() {
+	// Define command line arguments
+	all := flag.Bool("all", false, "List all tasks")
+	task := flag.String("task", "", "Task to be included i the toDo list")
+	list := flag.Bool("list", false, "List uncompleted tasks")
+	complete := flag.Int("complete", 0, "Item to be completed")
+	uncomplete := flag.Int("uncomplete", 0, "Uncomplete a completed task")
+
+	flag.Parse()
+
 	l := &td.List{}
 
 	if err := l.Get(todoFileName); err != nil {
@@ -19,28 +28,60 @@ func main() {
 		os.Exit(1)
 	}
 
-	// with which flag what should happen ?
 	switch {
-	case len(os.Args) == 1:
+	case *all:
+		// List all todos
 		for _, todo := range *l {
-			if !todo.Done {
+			fmt.Fprintln(os.Stdout, todo.Task)
+		}
+
+	case *list:
+		// List just completed todos
+		for _, todo := range *l {
+			if todo.Done {
 				fmt.Fprintln(os.Stdout, todo.Task)
 			}
 		}
+
+	case *complete > 0:
+		// Complete a task with this index
+		if err := l.Complete(*complete); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// Save the new list
+		if err := l.Save(todoFileName); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// Show updated task
+		fmt.Fprintln(os.Stdout, (*l)[*complete-1].Task)
+
+	case *task != "":
+		// Creating new task
+		l.Add(*task)
+
+		// Save the new list
+		if err := l.Save(todoFileName); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+	case *uncomplete > 0:
+		// Uncomplete a task
+		if err := l.Uncomplete(*uncomplete); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// Show updated task
+		fmt.Fprintln(os.Stdout, (*l)[*uncomplete-1].Task)
 
 	default:
-		if os.Args[1] == "-a" {
-			for _, todo := range *l {
-				fmt.Fprintln(os.Stdout, todo.Task)
-			}
-		} else {
-			item := strings.Join(os.Args[1:], " ")
-			l.Add(item)
-
-			if err := l.Save(todoFileName); err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
-			}
-		}
+		// Invalid option
+		fmt.Fprintln(os.Stderr, "Invalid option")
+		os.Exit(1)
 	}
 }
