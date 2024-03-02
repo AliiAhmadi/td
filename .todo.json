@@ -1,1 +1,1 @@
-[{"task":"first-task","done":true,"created_at":"2024-03-02T09:26:17.924791457+03:30","completed_at":"2024-03-02T09:26:42.141578691+03:30"},{"task":"second-task-but-uncompleted","done":false,"created_at":"2024-03-02T09:27:39.932612513+03:30","completed_at":"0001-01-01T00:00:00Z"}]
+[{"task":"first-task","done":true,"created_at":"2024-03-02T09:26:17.924791457+03:30","completed_at":"2024-03-02T17:36:00.482412264+03:30"},{"task":"second-task-but-uncompleted","done":true,"created_at":"2024-03-02T09:27:39.932612513+03:30","completed_at":"2024-03-02T17:34:54.768428156+03:30"}]

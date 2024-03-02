@@ -33,17 +33,11 @@ func main() {
 	switch {
 	case *all:
 		// List all todos
-		for _, todo := range *l {
-			fmt.Fprintln(os.Stdout, todo.Task)
-		}
+		fmt.Print(l)
 
 	case *list:
 		// List just completed todos
-		for _, todo := range *l {
-			if !todo.Done {
-				fmt.Fprintln(os.Stdout, todo.Task)
-			}
-		}
+		fmt.Print(l.Format())
 
 	case *complete > 0:
 		// Complete a task with this index

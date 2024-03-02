@@ -103,3 +103,36 @@ func (l *List) indexCheck(index int) error {
 
 	return nil
 }
+
+// String returns formatted list
+func (l *List) String() string {
+	formatted := ""
+
+	for k, v := range *l {
+		prefix := "   "
+
+		if v.Done {
+			prefix = "X  "
+		}
+
+		formatted += fmt.Sprintf("%s%d: %s\n", prefix, k+1, v.Task)
+	}
+
+	return formatted
+}
+
+func (l *List) Format() string {
+	formatted := ""
+
+	for k, v := range *l {
+		prefix := "   "
+
+		if v.Done {
+			continue
+		}
+
+		formatted += fmt.Sprintf("%s%d: %s\n", prefix, k+1, v.Task)
+	}
+
+	return formatted
+}
