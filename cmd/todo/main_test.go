@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -70,7 +69,7 @@ func TestTodoCLI(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		expected := strings.Join(tasks, "\n") + "\n"
+		expected := stringer(tasks, []int{})
 
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
@@ -83,7 +82,7 @@ func TestTodoCLI(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		expected = strings.Join(tasks, "\n") + "\n"
+		expected = stringer(tasks, []int{})
 
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
@@ -105,7 +104,7 @@ func TestTodoCLI(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		expected = strings.Join(tasks, "\n") + "\n"
+		expected = stringer(tasks, []int{1, 2, 3, 4})
 
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
@@ -140,7 +139,7 @@ func TestTodoCLI(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		expected = ""
+		expected = stringer(tasks, []int{})
 
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
@@ -153,10 +152,35 @@ func TestTodoCLI(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		expected = strings.Join(tasks, "\n") + "\n"
+		expected = stringer(tasks, []int{})
 
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
 		}
 	})
+}
+
+func stringer(strs []string, dones []int) string {
+	formatted := ""
+
+	for i, str := range strs {
+		prefix := "   "
+		if isExist(i+1, dones) {
+			prefix = "X  "
+		}
+
+		formatted += fmt.Sprintf("%s%d: %s\n", prefix, i+1, str)
+	}
+
+	return formatted
+}
+
+func isExist(num int, numbers []int) bool {
+	for _, n := range numbers {
+		if n == num {
+			return true
+		}
+	}
+
+	return false
 }
