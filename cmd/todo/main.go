@@ -38,7 +38,7 @@ func main() {
 	case *list:
 		// List just completed todos
 		for _, todo := range *l {
-			if todo.Done {
+			if !todo.Done {
 				fmt.Fprintln(os.Stdout, todo.Task)
 			}
 		}
