@@ -9,9 +9,14 @@ import (
 )
 
 // File name
-const todoFileName = ".todo.json"
+var todoFileName = ".todo.json"
 
 func main() {
+	// Check if the user defined the ENV VAR for a custom file name
+	if v := os.Getenv("TODO_FILENAME"); v != "" {
+		todoFileName = v
+	}
+
 	changeUsage()
 
 	// Define command line arguments
