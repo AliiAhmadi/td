@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -52,20 +53,19 @@ func TestTodoCLI(t *testing.T) {
 
 	path := filepath.Join(dir, binName)
 
-	t.Run("adding todos from command line", func(t *testing.T) {
+	// Completing all tasks and check -all and -list
+	t.Run("completing all tasks and check -all and -list flags", func(t *testing.T) {
+
 		for _, task := range tasks {
 			cmd := exec.Command(path, append(base, task)...)
 			if err := cmd.Run(); err != nil {
 				t.Fatal(err)
 			}
 		}
-	})
 
-	// Check
-	t.Run("listing todos by -all", func(t *testing.T) {
-		cmd := exec.Command(path, "-all")
+		allcmd := exec.Command(path, "-all")
 
-		out, err := cmd.CombinedOutput()
+		out, err := allcmd.CombinedOutput()
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -75,17 +75,85 @@ func TestTodoCLI(t *testing.T) {
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
 		}
-	})
 
-	t.Run("listing todos by -list", func(t *testing.T) {
-		cmd := exec.Command(path, "-list")
+		listcmd := exec.Command(path, "-list")
 
-		out, err := cmd.CombinedOutput()
+		out, err = listcmd.CombinedOutput()
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		expected := strings.Join(tasks, "\n") + "\n"
+		expected = strings.Join(tasks, "\n") + "\n"
+
+		if string(out) != expected {
+			t.Errorf("expected %q - got %q", expected, string(out))
+		}
+
+		for i := 1; i <= len(tasks); i++ {
+			cmd := exec.Command(path, []string{"-complete", strconv.Itoa(i)}...)
+
+			_, err := cmd.CombinedOutput()
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		allcmd = exec.Command(path, "-all")
+
+		out, err = allcmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected = strings.Join(tasks, "\n") + "\n"
+
+		if string(out) != expected {
+			t.Errorf("expected %q - got %q", expected, string(out))
+		}
+
+		listcmd = exec.Command(path, "-list")
+
+		out, err = listcmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected = ""
+
+		if string(out) != expected {
+			t.Errorf("expected %q - got %q", expected, string(out))
+		}
+
+		for i := 1; i <= len(tasks); i++ {
+			uncmpcmd := exec.Command(path, []string{"-uncomplete", strconv.Itoa(i)}...)
+
+			_, err = uncmpcmd.CombinedOutput()
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		cmd := exec.Command(path, "-list")
+
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected = ""
+
+		if string(out) != expected {
+			t.Errorf("expected %q - got %q", expected, string(out))
+		}
+
+		cmd = exec.Command(path, "-all")
+
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected = strings.Join(tasks, "\n") + "\n"
 
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
