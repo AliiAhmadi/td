@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 )
 
@@ -33,11 +34,16 @@ func TestMain(m *testing.M) {
 	os.Exit(res)
 }
 
-func TestListTodosCLI(t *testing.T) {
+func TestTodoCLI(t *testing.T) {
 	base := []string{
 		"-task",
 	}
-	task := "test-task-(1)"
+	tasks := []string{
+		"test-task-(1)",
+		"test-task-(2)",
+		"test-task-(3)",
+		"test-task-(4)",
+	}
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -46,15 +52,17 @@ func TestListTodosCLI(t *testing.T) {
 
 	path := filepath.Join(dir, binName)
 
-	t.Run("adding a todo from command line", func(t *testing.T) {
-		cmd := exec.Command(path, append(base, task)...)
-		if err := cmd.Run(); err != nil {
-			t.Fatal(err)
+	t.Run("adding todos from command line", func(t *testing.T) {
+		for _, task := range tasks {
+			cmd := exec.Command(path, append(base, task)...)
+			if err := cmd.Run(); err != nil {
+				t.Fatal(err)
+			}
 		}
 	})
 
 	// Check
-	t.Run("listing todos", func(t *testing.T) {
+	t.Run("listing todos by -all", func(t *testing.T) {
 		cmd := exec.Command(path, "-all")
 
 		out, err := cmd.CombinedOutput()
@@ -62,37 +70,25 @@ func TestListTodosCLI(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		expected := task + "\n"
+		expected := strings.Join(tasks, "\n") + "\n"
 
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
 		}
 	})
-}
 
-func TestShowAllTasks(t *testing.T) {
-	// base := []string{
-	// 	"-all",
-	// }
+	t.Run("listing todos by -list", func(t *testing.T) {
+		cmd := exec.Command(path, "-list")
 
-	// tasks := []string{
-	// 	"here-is-first-task",
-	// 	"here-is-second-task",
-	// }
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	// dir, err := os.Getwd()
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
+		expected := strings.Join(tasks, "\n") + "\n"
 
-	// path := filepath.Join(dir, binName)
-
-	// t.Run("adding todos from command line by using executable", func(t *testing.T) {
-	// 	for _, task := range tasks {
-	// 		cmd := exec.Command(path, append(base, task)...)
-	// 		if err := cmd.Run(); err != nil {
-	// 			t.Fatal(err)
-	// 		}
-	// 	}
-	// })
+		if string(out) != expected {
+			t.Errorf("expected %q - got %q", expected, string(out))
+		}
+	})
 }
