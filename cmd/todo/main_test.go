@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"testing"
 )
 
@@ -48,7 +47,7 @@ func TestListTodosCLI(t *testing.T) {
 	path := filepath.Join(dir, binName)
 
 	t.Run("adding a todo from command line", func(t *testing.T) {
-		cmd := exec.Command(path, append(base, strings.Split(task, " ")...)...)
+		cmd := exec.Command(path, append(base, task)...)
 		if err := cmd.Run(); err != nil {
 			t.Fatal(err)
 		}
@@ -69,4 +68,31 @@ func TestListTodosCLI(t *testing.T) {
 			t.Errorf("expected %q - got %q", expected, string(out))
 		}
 	})
+}
+
+func TestShowAllTasks(t *testing.T) {
+	// base := []string{
+	// 	"-all",
+	// }
+
+	// tasks := []string{
+	// 	"here-is-first-task",
+	// 	"here-is-second-task",
+	// }
+
+	// dir, err := os.Getwd()
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	// path := filepath.Join(dir, binName)
+
+	// t.Run("adding todos from command line by using executable", func(t *testing.T) {
+	// 	for _, task := range tasks {
+	// 		cmd := exec.Command(path, append(base, task)...)
+	// 		if err := cmd.Run(); err != nil {
+	// 			t.Fatal(err)
+	// 		}
+	// 	}
+	// })
 }
