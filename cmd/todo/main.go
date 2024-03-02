@@ -12,6 +12,8 @@ import (
 const todoFileName = ".todo.json"
 
 func main() {
+	changeUsage()
+
 	// Define command line arguments
 	all := flag.Bool("all", false, "List all tasks")
 	task := flag.String("task", "", "Task to be included i the toDo list")
@@ -83,5 +85,14 @@ func main() {
 		// Invalid option
 		fmt.Fprintln(os.Stderr, "Invalid option")
 		os.Exit(1)
+	}
+}
+
+func changeUsage() {
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "%s tool, Developed for MHM\n", os.Args[0])
+		fmt.Fprintf(flag.CommandLine.Output(), "Copyright 2024\n")
+		fmt.Fprintln(flag.CommandLine.Output(), "Usage information:")
+		flag.PrintDefaults()
 	}
 }
