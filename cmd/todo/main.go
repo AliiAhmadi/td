@@ -30,6 +30,7 @@ func main() {
 	list := flag.Bool("list", false, "List uncompleted tasks")
 	complete := flag.Int("complete", 0, "Item to be completed")
 	uncomplete := flag.Int("uncomplete", 0, "Uncomplete a completed task")
+	del := flag.Int("del", 0, "Deleting a task from list")
 
 	flag.Parse()
 
@@ -41,6 +42,18 @@ func main() {
 	}
 
 	switch {
+	case *del > 0:
+		if err := l.Delete(*del); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// Save the new list
+		if err := l.Save(todoFileName); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
 	case *all:
 		// List all todos
 		fmt.Print(l)

@@ -157,6 +157,41 @@ func TestTodoCLI(t *testing.T) {
 		if string(out) != expected {
 			t.Errorf("expected %q - got %q", expected, string(out))
 		}
+
+		for i := 0; i < len(tasks); i++ {
+			delCmd := exec.Command(path, []string{"-del", strconv.Itoa(1)}...)
+
+			_, err := delCmd.CombinedOutput()
+			if err != nil {
+				t.Fatal(err, i)
+			}
+		}
+
+		cmd = exec.Command(path, "-list")
+
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected = stringer([]string{}, []int{})
+
+		if string(out) != expected {
+			t.Errorf("expected %q - got %q", expected, string(out))
+		}
+
+		cmd = exec.Command(path, "-all")
+
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected = stringer([]string{}, []int{})
+
+		if string(out) != expected {
+			t.Errorf("expected %q - got %q", expected, string(out))
+		}
 	})
 }
 
