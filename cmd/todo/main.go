@@ -1,9 +1,13 @@
 package main
 
 import (
+	"bufio"
+	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
+	"strings"
 
 	"github.com/AliiAhmadi/td"
 )
@@ -20,6 +24,7 @@ func main() {
 	changeUsage()
 
 	// Define command line arguments
+	add := flag.Bool("add", false, "Add new task to todo list")
 	all := flag.Bool("all", false, "List all tasks")
 	task := flag.String("task", "", "Task to be included i the toDo list")
 	list := flag.Bool("list", false, "List uncompleted tasks")
@@ -86,6 +91,19 @@ func main() {
 		// Show updated task
 		fmt.Fprintln(os.Stdout, (*l)[*uncomplete-1].Task)
 
+	case *add:
+		tsk, err := getTask(os.Stdin, flag.Args()...)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		l.Add(tsk)
+		if err := l.Save(todoFileName); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
 	default:
 		// Invalid option
 		fmt.Fprintln(os.Stderr, "Invalid option")
@@ -100,4 +118,23 @@ func changeUsage() {
 		fmt.Fprintln(flag.CommandLine.Output(), "Usage information:")
 		flag.PrintDefaults()
 	}
+}
+
+func getTask(r io.Reader, args ...string) (string, error) {
+	if len(args) > 0 {
+		return strings.Join(args, " "), nil
+	}
+
+	s := bufio.NewScanner(r)
+	s.Scan()
+
+	if err := s.Err(); err != nil {
+		return "", err
+	}
+
+	if len(s.Text()) == 0 {
+		return "", errors.New("task can not be blank")
+	}
+
+	return s.Text(), nil
 }
