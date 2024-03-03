@@ -8,10 +8,14 @@ Command line todo application for Delete, Create, Update, Get and Save todos in 
 ./td tool, Developed for MHM
 Copyright 2024
 Usage information:
+  -add
+        Add new task to todo list
   -all
         List all tasks
   -complete int
         Item to be completed
+  -del int
+        Deleting a task from list
   -list
         List uncompleted tasks
   -task string
